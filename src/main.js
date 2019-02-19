@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const mainFilter = document.querySelector(`.main__filter`);
 const boardTasks = document.querySelector(`.board__tasks`);
@@ -107,7 +107,7 @@ function renderCard(text, hashtags, color = `black`) {
               <div class="card__hashtag">
                 <div class="card__hashtag-list">
                   ${ card.hashtags.map(function (hashtag) {
-  return `<span class="card__hashtag-inner">
+    return `<span class="card__hashtag-inner">
                       <input type="hidden" name="hashtag" value="repeat" class="card__hashtag-hidden-input">
                       <button type="button" class="card__hashtag-name">
                         #${hashtag}

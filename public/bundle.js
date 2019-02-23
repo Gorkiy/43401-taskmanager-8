@@ -121,17 +121,22 @@ function toggleFilter(event) {
   }
 }
 
+function renderFilters() {
+  let result = ``;
+  result += Object(_make_filter_js__WEBPACK_IMPORTED_MODULE_1__["renderFilter"])(`overdue`, 0);
+  result += Object(_make_filter_js__WEBPACK_IMPORTED_MODULE_1__["renderFilter"])(`today`, 0);
+  result += Object(_make_filter_js__WEBPACK_IMPORTED_MODULE_1__["renderFilter"])(`favorites`, 7);
+  result += Object(_make_filter_js__WEBPACK_IMPORTED_MODULE_1__["renderFilter"])(`repeating`, 2);
+  result += Object(_make_filter_js__WEBPACK_IMPORTED_MODULE_1__["renderFilter"])(`tags`, 6);
+  result += Object(_make_filter_js__WEBPACK_IMPORTED_MODULE_1__["renderFilter"])(`archive`, 115);
+  mainFilter.innerHTML = result;
+}
+
 mainFilter.addEventListener(`click`, toggleFilter);
 
 // Temp render
 renderCards(7);
-
-mainFilter.insertAdjacentHTML(`beforeend`, Object(_make_filter_js__WEBPACK_IMPORTED_MODULE_1__["renderFilter"])(`overdue`, 0));
-mainFilter.insertAdjacentHTML(`beforeend`, Object(_make_filter_js__WEBPACK_IMPORTED_MODULE_1__["renderFilter"])(`today`, 0));
-mainFilter.insertAdjacentHTML(`beforeend`, Object(_make_filter_js__WEBPACK_IMPORTED_MODULE_1__["renderFilter"])(`favorites`, 7));
-mainFilter.insertAdjacentHTML(`beforeend`, Object(_make_filter_js__WEBPACK_IMPORTED_MODULE_1__["renderFilter"])(`repeating`, 2));
-mainFilter.insertAdjacentHTML(`beforeend`, Object(_make_filter_js__WEBPACK_IMPORTED_MODULE_1__["renderFilter"])(`tags`, 6));
-mainFilter.insertAdjacentHTML(`beforeend`, Object(_make_filter_js__WEBPACK_IMPORTED_MODULE_1__["renderFilter"])(`archive`, 115));
+renderFilters();
 
 
 /***/ }),

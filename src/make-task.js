@@ -9,7 +9,7 @@ export class Card {
     this.id = id;
   }
 
-  renderCard(board) {
+  renderCard() {
     const card = this;
     this.render = `
       <article class="card card--${this.color}">
@@ -94,7 +94,7 @@ export class Card {
   }).join(``)
 }
                   </div>
-
+                  
                   <label>
                     <input type="text" class="card__hashtag-input" name="hashtag-input" placeholder="Type new hashtag here">
                   </label>
@@ -126,6 +126,5 @@ export class Card {
         </form>
       </article>
     `;
-    board.insertAdjacentHTML(`beforeend`, this.render);
   }
 }

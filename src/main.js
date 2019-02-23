@@ -4,10 +4,13 @@ import {renderFilter} from './make-filter.js';
 const boardTasks = document.querySelector(`.board__tasks`);
 
 function renderCards(amount) {
+  let result = ``;
   for (let i = 0; i < amount; i++) {
     let card = new Card(`This is a random generated card`, [`repeat`, `cinema`, `entertaiment`], `pink`, i);
-    card.renderCard(boardTasks);
+    card.renderCard();
+    result += card.render;
   }
+  boardTasks.innerHTML = result;
 }
 
 const mainFilter = document.querySelector(`.main__filter`);
@@ -22,14 +25,19 @@ function toggleFilter(event) {
   }
 }
 
+function renderFilters() {
+  let result = ``;
+  result += renderFilter(`overdue`, 0);
+  result += renderFilter(`today`, 0);
+  result += renderFilter(`favorites`, 7);
+  result += renderFilter(`repeating`, 2);
+  result += renderFilter(`tags`, 6);
+  result += renderFilter(`archive`, 115);
+  mainFilter.innerHTML = result;
+}
+
 mainFilter.addEventListener(`click`, toggleFilter);
 
 // Temp render
 renderCards(7);
-
-mainFilter.insertAdjacentHTML(`beforeend`, renderFilter(`overdue`, 0));
-mainFilter.insertAdjacentHTML(`beforeend`, renderFilter(`today`, 0));
-mainFilter.insertAdjacentHTML(`beforeend`, renderFilter(`favorites`, 7));
-mainFilter.insertAdjacentHTML(`beforeend`, renderFilter(`repeating`, 2));
-mainFilter.insertAdjacentHTML(`beforeend`, renderFilter(`tags`, 6));
-mainFilter.insertAdjacentHTML(`beforeend`, renderFilter(`archive`, 115));
+renderFilters();

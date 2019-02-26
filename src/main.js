@@ -1,16 +1,14 @@
-import {Card} from './make-task.js';
+import {renderTask, task} from './make-task.js';
 import {renderFilter} from './make-filter.js';
 
 const boardTasks = document.querySelector(`.board__tasks`);
+let tasks = [];
 
-function renderCards(amount) {
-  let result = ``;
+function renderTasks(amount) {
   for (let i = 0; i < amount; i++) {
-    let card = new Card(`This is a random generated card`, [`repeat`, `cinema`, `entertaiment`], `pink`, i);
-    card.renderCard();
-    result += card.render;
+    tasks.push(renderTask(task));
   }
-  boardTasks.innerHTML = result;
+  boardTasks.innerHTML = tasks.join(``);
 }
 
 const mainFilter = document.querySelector(`.main__filter`);
@@ -18,10 +16,10 @@ const mainFilter = document.querySelector(`.main__filter`);
 function toggleFilter(event) {
   let clickedFilter = event.target.closest(`.filter__input`);
   if (clickedFilter) {
-    boardTasks.innerHTML = ``;
+    tasks = [];
 
     const randomAmount = Math.floor(Math.random() * 6) + 1;
-    renderCards(randomAmount);
+    renderTasks(randomAmount);
   }
 }
 
@@ -39,5 +37,5 @@ function renderFilters() {
 mainFilter.addEventListener(`click`, toggleFilter);
 
 // Temp render
-renderCards(7);
+renderTasks(7);
 renderFilters();

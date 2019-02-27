@@ -105,7 +105,7 @@ let tasks = [];
 
 function renderTasks(amount) {
   for (let i = 0; i < amount; i++) {
-    tasks.push(Object(_make_task_js__WEBPACK_IMPORTED_MODULE_0__["renderTask"])(_make_task_js__WEBPACK_IMPORTED_MODULE_0__["task"]));
+    tasks.push(Object(_make_task_js__WEBPACK_IMPORTED_MODULE_0__["renderTask"])(Object(_make_task_js__WEBPACK_IMPORTED_MODULE_0__["task"])()));
   }
   boardTasks.innerHTML = tasks.join(``);
 }
@@ -186,41 +186,48 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "task", function() { return task; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "renderTask", function() { return renderTask; });
 
-const colors = [
-  `black`,
-  `yellow`,
-  `blue`,
-  `green`,
-  `pink`
+const colors = [`black`, `yellow`, `blue`, `green`, `pink`];
+const tags = [`homework`, `theory`, `practice`, `intensive`, `keks`];
+const MS_IN_DAY = 24 * 60 * 60 * 1000;
+const titles = [
+  `Изучить теорию`,
+  `Сделать домашку`,
+  `Пройти интенсив на соточку`
 ];
+const getRandomInt = (maxNum) => Math.floor(Math.random() * maxNum);
 
-let task = {
-  title: [
-    `Изучить теорию`,
-    `Сделать домашку`,
-    `Пройти интенсив на соточку`,
-  ][Math.floor(Math.random() * 3)],
-  dueDate: Date.now() + 1 + Math.floor(Math.random() * 7) * 24 * 60 * 60 * 1000,
-  tags: new Set([
-    `homework`,
-    `theory`,
-    `practice`,
-    `keks`,
-  ]),
-  picture: `//picsum.photos/100/100?r=${Math.random()}`,
-  color: colors[Math.floor(Math.random() * 6)],
-  repeatingDays: {
-    'mo': true,
-    'tu': false,
-    'we': true,
-    'th': false,
-    'fr': false,
-    'sa': true,
-    'su': false,
-  },
-  isFavorite: true,
-  isDone: false,
+const getRandomTags = (tagsArr) => {
+  let result = [];
+  for (let i = 0; i < getRandomInt(4); i++) {
+    let tag = tagsArr[getRandomInt(tags.length)];
+    if (!result.includes(tag)) {
+      result.push(tag);
+    } else {
+      i--;
+    }
+  }
+  return result;
 };
+
+const task = () =>
+  ({
+    title: titles[getRandomInt(titles.length)],
+    dueDate: Date.now() + MS_IN_DAY * getRandomInt(7),
+    tags: new Set(getRandomTags(tags)),
+    picture: `//picsum.photos/100/100?r=${Math.random()}`,
+    color: colors[getRandomInt(colors.length)],
+    repeatingDays: {
+      'mo': true,
+      'tu': false,
+      'we': true,
+      'th': false,
+      'fr': false,
+      'sa': true,
+      'su': false,
+    },
+    isFavorite: true,
+    isDone: false,
+  });
 
 const renderTask = (curTask) => `<article class="card card--${curTask.color}">
   <form class="card__form" method="get">

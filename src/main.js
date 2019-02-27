@@ -6,7 +6,7 @@ let tasks = [];
 
 function renderTasks(amount) {
   for (let i = 0; i < amount; i++) {
-    tasks.push(renderTask(task));
+    tasks.push(renderTask(task()));
   }
   boardTasks.innerHTML = tasks.join(``);
 }

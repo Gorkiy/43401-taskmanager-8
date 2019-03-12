@@ -1,4 +1,5 @@
 import Component from './component.js';
+// let moment = require('moment');
 
 class Task extends Component {
   constructor(data) {
@@ -35,6 +36,13 @@ class Task extends Component {
 
   set onEdit(fn) {
     this._onEdit = fn;
+  }
+
+  update(data) {
+    this._title = data.title;
+    this._tags = data.tags;
+    this._color = data.color;
+    this._repeatingDays = data.repeatingDays;
   }
 
   get template() {

@@ -28,6 +28,8 @@ class Component {
     return this._element;
   }
 
+  update() {}
+
   createListeners() {}
 
   removeListeners() {}

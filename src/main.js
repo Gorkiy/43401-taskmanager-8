@@ -22,7 +22,14 @@ function renderTasks(amount) {
       task.unrender();
     };
 
-    taskEdit.onSubmit = () => {
+    taskEdit.onSubmit = (newObject) => {
+      task.title = newObject.title;
+      task.tags = newObject.tags;
+      task.color = newObject.color;
+      task.repeatingDays = newObject.repeatingDays;
+      task.dueDate = newObject.dueDate;
+
+      task.update(task);
       task.render();
       boardTasks.replaceChild(task.element, taskEdit.element);
       taskEdit.unrender();

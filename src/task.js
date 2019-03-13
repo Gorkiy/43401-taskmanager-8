@@ -1,5 +1,5 @@
 import Component from './component.js';
-// let moment = require('moment');
+import moment from 'moment';
 
 class Task extends Component {
   constructor(data) {
@@ -71,12 +71,12 @@ class Task extends Component {
           <div class="card__settings">
             <div class="card__details">
               <div class="card__dates">
-                <fieldset class="card__date-deadline" disabled>
+                <fieldset class="card__date-deadline">
                   <label class="card__input-deadline-wrap">
-                    <input class="card__date" type="text" placeholder="23 September" name="date" />
+                    <input class="card__date" type="text" value="${moment(this._dueDate).format(`DD MMMM`)}" name="date" />
                   </label>
                   <label class="card__input-deadline-wrap">
-                    <input class="card__time" type="text" placeholder="11:15 PM" name="time" />
+                    <input class="card__time" type="text" value="${moment(this._dueDate).format(`HH:MM`)}" name="time" />
                   </label>
                 </fieldset>
                 <fieldset class="card__repeat-days" disabled>

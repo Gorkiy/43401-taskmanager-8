@@ -23,13 +23,13 @@ function renderTasks(amount) {
     };
 
     taskEdit.onSubmit = (newObject) => {
-      task.title = newObject.title;
-      task.tags = newObject.tags;
-      task.color = newObject.color;
-      task.repeatingDays = newObject.repeatingDays;
-      task.dueDate = newObject.dueDate;
+      taskData.title = newObject.title;
+      taskData.tags = newObject.tags;
+      taskData.color = newObject.color;
+      taskData.repeatingDays = newObject.repeatingDays;
+      taskData.dueDate = newObject.dueDate;
 
-      task.update(task);
+      task.update(taskData);
       task.render();
       boardTasks.replaceChild(task.element, taskEdit.element);
       taskEdit.unrender();

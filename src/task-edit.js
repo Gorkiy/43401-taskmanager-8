@@ -100,7 +100,10 @@ class TaskEdit extends Component {
   }
 
   _partialUpdate() {
-    this._element.innerHTML = this.template;
+    this.removeListeners();
+    const oldElement = this._element;
+    this.render();
+    oldElement.parentNode.replaceChild(this._element, oldElement);
   }
 
   _isRepeated() {

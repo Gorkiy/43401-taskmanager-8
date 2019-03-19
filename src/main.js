@@ -5,7 +5,7 @@ import TaskEdit from './task-edit.js';
 import Filter from './filter.js';
 
 const boardTasks = document.querySelector(`.board__tasks`);
-// const filters = document.querySelector(`.filter`);
+const filters = document.querySelector(`.filter`);
 const mainFilter = document.querySelector(`.main__filter`);
 let tasksRawData = [];
 let filtersRawData = [
@@ -70,32 +70,50 @@ function renderTasks(tasks) {
   }
 }
 
-function toggleFilter(event) {
-  let clickedFilter = event.target.closest(`.filter__input`);
-  if (clickedFilter) {
-    boardTasks.innerHTML = ``;
-    const randomAmount = Math.floor(Math.random() * 6) + 1;
-    tasksRawData = getRawData(randomAmount);
-    renderTasks(tasksRawData);
+// function toggleFilter(event) {
+//   let clickedFilter = event.target.closest(`.filter__input`);
+//   if (clickedFilter) {
+//     boardTasks.innerHTML = ``;
+//     const randomAmount = Math.floor(Math.random() * 6) + 1;
+//     tasksRawData = getRawData(randomAmount);
+//     renderTasks(tasksRawData);
+//   }
+// }
+
+const filterTasks = (tasks, filterName) => {
+  switch (filterName) {
+    case `filter__all`:
+      return tasksRawData;
+
+    case `filter__overdue`:
+      return tasksRawData.filter((it) => it.dueDate < Date.now());
+
+    case `filter__today`:
+      return tasksRawData.filter((it) => true);
+
+    case `filter__repeating`:
+      return tasksRawData.filter((it) => [...Object.entries(it.repeatingDays)]
+          .some((rec) => rec[1]));
+
+    case `filter__favorites`:
+      return tasksRawData;
   }
-}
+};
 
 function renderFilters(filtersData) {
   filtersData.forEach((rawFilter) => {
-    const filter = new Filter(rawFilter);
+    let filter = new Filter(rawFilter);
     mainFilter.appendChild(filter.render());
-    // console.log(mainFilter);
+
+    filter.onFilter = () => {
+      const filterName = filter._id;
+      const filteredTasks = filterTasks(tasksRawData, filterName);
+      // console.log(filteredTasks);
+      boardTasks.innerHTML = ``; // там можно очищать или надо думать, как удалять элементы?
+      renderTasks(filteredTasks);
+    }
   });
-  // mainFilter.innerHTML = result;
 }
-
-// mainFilter.onchange = (evt) => {
-//   const filterName = evt.target.id;
-//   const filteredTasks = filterTasks(tasksRawData, filterName);
-//   renderTasks(filteredTasks);
-// };
-
-mainFilter.addEventListener(`click`, toggleFilter);
 
 // Temp render
 tasksRawData = getRawData(7);

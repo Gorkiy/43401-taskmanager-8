@@ -105,8 +105,6 @@ class TaskEdit extends Component {
     if (typeof this._onDelete === `function`) {
       this._onDelete();
     }
-    // this.removeListeners();
-    // this._partialUpdate();
   }
 
   _partialUpdate() {
@@ -124,7 +122,7 @@ class TaskEdit extends Component {
     this._element.querySelector(`.card__form`)
       .addEventListener(`submit`, this._onSubmitButtonClick);
     this._element.querySelector(`.card__delete`)
-      .addEventListener(`submit`, this._onDeleteButtonClick);
+      .addEventListener(`click`, this._onDeleteButtonClick);
     this._element.querySelector(`.card__date-deadline-toggle`)
       .addEventListener(`click`, this._onChangeDate);
     this._element.querySelector(`.card__repeat-toggle`)
@@ -142,7 +140,7 @@ class TaskEdit extends Component {
     this._element.querySelector(`.card__form`)
       .removeEventListener(`submit`, this._onSubmitButtonClick);
     this._element.querySelector(`.card__delete`)
-      .removeEventListener(`submit`, this._onDeleteButtonClick);
+      .removeEventListener(`click`, this._onDeleteButtonClick);
     this._element.querySelector(`.card__date-deadline-toggle`)
       .removeEventListener(`click`, this._onChangeDate);
     this._element.querySelector(`.card__repeat-toggle`)

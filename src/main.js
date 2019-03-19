@@ -42,7 +42,7 @@ function renderTasks(amount) {
 
     taskEdit.onDelete = () => {
       deleteTask(tasks, i);
-      // task.unrender();
+      // task.unrender(); Должны ли мы делать анрендер для task? Ведь он и так пропадает из DOM почему-то, хотя мы делаем анрендер только taskEdit
       taskEdit.unrender();
     }
 

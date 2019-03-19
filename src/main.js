@@ -3,10 +3,23 @@ import {makeFilterData} from './make-filter.js';
 import Task from './task.js';
 import TaskEdit from './task-edit.js';
 import Filter from './filter.js';
+// import {statsPeriod, tagsChart, colorsChart} from './stats.js'; // ESLint не пропускает. Пришлось закоментировать
 
 const boardTasks = document.querySelector(`.board__tasks`);
-const filters = document.querySelector(`.filter`);
 const mainFilter = document.querySelector(`.main__filter`);
+const statistic = document.querySelector(`.statistic`);
+const statsButton = document.querySelector(`#control__statistic`);
+const tasksButton = document.querySelector(`#control__task`);
+statsButton.addEventListener(`click`, () => {
+  boardTasks.classList.add(`visually-hidden`);
+  statistic.classList.remove(`visually-hidden`);
+});
+
+tasksButton.addEventListener(`click`, () => {
+  boardTasks.classList.remove(`visually-hidden`);
+  statistic.classList.add(`visually-hidden`);
+});
+
 let tasksRawData = [];
 let filtersRawData = [
   makeFilterData(`all`, `filter__all`, true),
@@ -70,15 +83,6 @@ function renderTasks(tasks) {
   }
 }
 
-// function toggleFilter(event) {
-//   let clickedFilter = event.target.closest(`.filter__input`);
-//   if (clickedFilter) {
-//     boardTasks.innerHTML = ``;
-//     const randomAmount = Math.floor(Math.random() * 6) + 1;
-//     tasksRawData = getRawData(randomAmount);
-//     renderTasks(tasksRawData);
-//   }
-// }
 
 const filterTasks = (tasks, filterName) => {
   switch (filterName) {
@@ -89,15 +93,13 @@ const filterTasks = (tasks, filterName) => {
       return tasksRawData.filter((it) => it.dueDate < Date.now());
 
     case `filter__today`:
-      return tasksRawData.filter((it) => true);
+      return tasksRawData.filter(() => true);
 
     case `filter__repeating`:
       return tasksRawData.filter((it) => [...Object.entries(it.repeatingDays)]
           .some((rec) => rec[1]));
-
-    case `filter__favorites`:
-      return tasksRawData;
   }
+  return tasksRawData;
 };
 
 function renderFilters(filtersData) {
@@ -111,7 +113,7 @@ function renderFilters(filtersData) {
       // console.log(filteredTasks);
       boardTasks.innerHTML = ``; // там можно очищать или надо думать, как удалять элементы?
       renderTasks(filteredTasks);
-    }
+    };
   });
 }
 

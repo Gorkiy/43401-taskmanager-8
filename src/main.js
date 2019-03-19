@@ -6,6 +6,11 @@ import TaskEdit from './task-edit.js';
 const boardTasks = document.querySelector(`.board__tasks`);
 let tasks = [];
 
+const deleteTask = (tasks, i) => {
+  tasks[i] = null;
+  return tasks;
+};
+
 function renderTasks(amount) {
   for (let i = 0; i < amount; i++) {
     let taskData = makeTaskData();
@@ -34,6 +39,13 @@ function renderTasks(amount) {
       boardTasks.replaceChild(task.element, taskEdit.element);
       taskEdit.unrender();
     };
+
+    taskEdit.onDelete = () => {
+      deleteTask(tasks, i);
+      // task.unrender();
+      taskEdit.unrender();
+    }
+
   }
 }
 

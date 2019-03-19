@@ -1,20 +1,42 @@
 import {makeTaskData} from './make-task.js';
-import {renderFilter} from './make-filter.js';
+import {makeFilterData} from './make-filter.js';
 import Task from './task.js';
 import TaskEdit from './task-edit.js';
+import Filter from './filter.js';
 
 const boardTasks = document.querySelector(`.board__tasks`);
-let tasks = [];
+// const filters = document.querySelector(`.filter`);
+const mainFilter = document.querySelector(`.main__filter`);
+let tasksRawData = [];
+let filtersRawData = [
+  makeFilterData(`all`, `filter__all`, true),
+  makeFilterData(`overdue`, `filter__overdue`),
+  makeFilterData(`today`, `filter__today`),
+  makeFilterData(`favorites`, `filter__favorites`),
+  makeFilterData(`repeating`, `filter__repeating`),
+  makeFilterData(`tags`, `filter__tags`),
+  makeFilterData(`archive`, `filter__archive`)
+];
 
 const deleteTask = (tasks, i) => {
   tasks[i] = null;
   return tasks;
 };
 
-function renderTasks(amount) {
+const getRawData = (amount) => {
+  let result = [];
   for (let i = 0; i < amount; i++) {
     let taskData = makeTaskData();
-    tasks.push(taskData);
+    result.push(taskData);
+  }
+  return result;
+};
+
+function renderTasks(tasks) {
+  for (let i = 0; i < tasks.length; i++) {
+    // let taskData = makeTaskData();
+    // tasks.push(taskData);
+    let taskData = tasksRawData[i];
 
     let task = new Task(taskData);
     let taskEdit = new TaskEdit(taskData);
@@ -41,40 +63,41 @@ function renderTasks(amount) {
     };
 
     taskEdit.onDelete = () => {
-      deleteTask(tasks, i);
-      // task.unrender(); Должны ли мы делать анрендер для task? Ведь он и так пропадает из DOM почему-то, хотя мы делаем анрендер только taskEdit
+      deleteTask(tasks, i); // Вопрос 1. Спросить у Вадима, почему здесь при возвращении tasks обновляется массив в глобальной видимости. Или не обновляется? Не понимаю, как это работает
       taskEdit.unrender();
-    }
-
+      // task.unrender(); Вопрос 2. Должны ли мы делать анрендер для task? Ведь он и так пропадает из DOM почему-то, хотя мы делаем анрендер только taskEdit
+    };
   }
 }
-
-const mainFilter = document.querySelector(`.main__filter`);
 
 function toggleFilter(event) {
   let clickedFilter = event.target.closest(`.filter__input`);
   if (clickedFilter) {
-    tasks = [];
     boardTasks.innerHTML = ``;
-
     const randomAmount = Math.floor(Math.random() * 6) + 1;
-    renderTasks(randomAmount);
+    tasksRawData = getRawData(randomAmount);
+    renderTasks(tasksRawData);
   }
 }
 
-function renderFilters() {
-  let result = ``;
-  result += renderFilter(`overdue`, 0);
-  result += renderFilter(`today`, 0);
-  result += renderFilter(`favorites`, 7);
-  result += renderFilter(`repeating`, 2);
-  result += renderFilter(`tags`, 6);
-  result += renderFilter(`archive`, 115);
-  mainFilter.innerHTML = result;
+function renderFilters(filtersData) {
+  filtersData.forEach((rawFilter) => {
+    const filter = new Filter(rawFilter);
+    mainFilter.appendChild(filter.render());
+    // console.log(mainFilter);
+  });
+  // mainFilter.innerHTML = result;
 }
+
+// mainFilter.onchange = (evt) => {
+//   const filterName = evt.target.id;
+//   const filteredTasks = filterTasks(tasksRawData, filterName);
+//   renderTasks(filteredTasks);
+// };
 
 mainFilter.addEventListener(`click`, toggleFilter);
 
 // Temp render
-renderTasks(7);
-renderFilters();
+tasksRawData = getRawData(7);
+renderTasks(tasksRawData);
+renderFilters(filtersRawData);

@@ -3,7 +3,8 @@ import {makeFilterData} from './make-filter.js';
 import Task from './task.js';
 import TaskEdit from './task-edit.js';
 import Filter from './filter.js';
-// import {statsPeriod, tagsChart, colorsChart} from './stats.js'; // ESLint не пропускает. Пришлось закоментировать
+import './stats.js';
+import {defaultDates} from './stats.js';
 
 const boardTasks = document.querySelector(`.board__tasks`);
 const mainFilter = document.querySelector(`.main__filter`);
@@ -21,6 +22,25 @@ tasksButton.addEventListener(`click`, () => {
 });
 
 let tasksRawData = [];
+export const chartColorsData = new Map();
+
+const getChartsData = (tasks) => {
+  chartColorsData.clear();
+
+  const filteredTasks = tasks.filter((task) => {
+    return task.dueDate < defaultDates.thisSunday && task.dueDate > defaultDates.thisMonday;
+  });
+
+  filteredTasks.map((task) => {
+    if (!chartColorsData.has(task.color)) {
+      chartColorsData.set(task.color, 1);
+    } else {
+      chartColorsData.set(task.color, chartColorsData.get(task.color) + 1);
+    }
+  });
+  // console.log(chartColorsData);
+};
+
 let filtersRawData = [
   makeFilterData(`all`, `filter__all`, true),
   makeFilterData(`overdue`, `filter__overdue`),
@@ -121,3 +141,5 @@ function renderFilters(filtersData) {
 tasksRawData = getRawData(7);
 renderTasks(tasksRawData);
 renderFilters(filtersRawData);
+
+getChartsData(tasksRawData);

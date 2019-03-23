@@ -13,18 +13,22 @@ const statsButton = document.querySelector(`#control__statistic`);
 const tasksButton = document.querySelector(`#control__task`);
 
 let tasksRawData = [];
-const chartColorsData = {
+const chartData = {
   colors: [],
   colorRepeats: [],
   hexColors: [],
+  tags: [],
+  tagRepeats: [],
 };
 
 statsButton.addEventListener(`click`, () => {
   boardTasks.classList.add(`visually-hidden`);
   statistic.classList.remove(`visually-hidden`);
   getChartsData(tasksRawData);
-  chart.generateColorsChart(document.querySelector(`.statistic__colors`), chartColorsData.colors, chartColorsData.colorRepeats, chartColorsData.hexColors);
-  // console.log(chartColorsData);
+  chart.generateColorsChart(document.querySelector(`.statistic__colors`), chartData.colors, chartData.colorRepeats, chartData.hexColors);
+  chart.generateTagsChart(document.querySelector(`.statistic__tags`), chartData.tags, chartData.tagRepeats);
+
+  console.log(chartData);
 });
 
 tasksButton.addEventListener(`click`, () => {
@@ -38,6 +42,7 @@ const getChartsData = (tasks) => {
   });
 
   const chartColors = new Map();
+  const chartTags = new Map();
   const hexColors = [];
   filteredTasks.map((task) => {
     if (!chartColors.has(task.color)) {
@@ -47,9 +52,24 @@ const getChartsData = (tasks) => {
       chartColors.set(task.color, chartColors.get(task.color) + 1);
     }
   });
-  chartColorsData.colors = [...chartColors.keys()];
-  chartColorsData.colorRepeats = [...chartColors.values()];
-  chartColorsData.hexColors = hexColors;
+
+  filteredTasks.map((task) => {
+    Array.from(task.tags).map((tag) => {
+      if (!chartTags.has(tag)) {
+        chartTags.set(tag, 1);
+        // hexColors.push(colorToHex(task.color));
+      } else {
+        chartTags.set(tag, chartTags.get(tag) + 1);
+      }
+    });
+  });
+
+  chartData.colors = [...chartColors.keys()];
+  chartData.colorRepeats = [...chartColors.values()];
+  chartData.hexColors = hexColors;
+
+  chartData.tags = [...chartTags.keys()];
+  chartData.tagRepeats = [...chartTags.values()];
 };
 
 let filtersRawData = [

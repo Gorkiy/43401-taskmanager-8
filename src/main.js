@@ -25,9 +25,7 @@ statsButton.addEventListener(`click`, () => {
   boardTasks.classList.add(`visually-hidden`);
   statistic.classList.remove(`visually-hidden`);
   renderCharts();
-
-  statsPeriod.config.onChange = renderCharts; // Как заставить onChange делать ререндер чартов на смену дат?
-  console.log(chartData);
+  statsPeriod.config.onChange = [renderCharts];
 });
 
 tasksButton.addEventListener(`click`, () => {
@@ -56,7 +54,6 @@ const getChartsData = (tasks) => {
     Array.from(task.tags).map((tag) => {
       if (!chartTags.has(tag)) {
         chartTags.set(tag, 1);
-        // hexColors.push(colorToHex(task.color));
       } else {
         chartTags.set(tag, chartTags.get(tag) + 1);
       }
@@ -75,7 +72,7 @@ const renderCharts = () => {
   getChartsData(tasksRawData);
   chart.generateColorsChart(document.querySelector(`.statistic__colors`), chartData.colors, chartData.colorRepeats, chartData.hexColors);
   chart.generateTagsChart(document.querySelector(`.statistic__tags`), chartData.tags, chartData.tagRepeats);
-}
+};
 
 let filtersRawData = [
   makeFilterData(`all`, `filter__all`, true),
@@ -130,9 +127,8 @@ function renderTasks(tasks) {
     };
 
     taskEdit.onDelete = () => {
-      deleteTask(tasks, i); // Вопрос 1. Спросить у Вадима, почему здесь при возвращении tasks обновляется массив в глобальной видимости. Или не обновляется? Не понимаю, как это работает
+      deleteTask(tasks, i);
       taskEdit.unrender();
-      // task.unrender(); Вопрос 2. Должны ли мы делать анрендер для task? Ведь он и так пропадает из DOM почему-то, хотя мы делаем анрендер только taskEdit
     };
   }
 }
@@ -163,7 +159,7 @@ function renderFilters(filtersData) {
     filter.onFilter = () => {
       const filterName = filter._id;
       const filteredTasks = filterTasks(tasksRawData, filterName);
-      boardTasks.innerHTML = ``; // там можно очищать или надо думать, как удалять элементы?
+      boardTasks.innerHTML = ``;
       renderTasks(filteredTasks);
     };
   });

@@ -33,19 +33,15 @@ export const colorToHex = (color) => {
     case `green`:
       result = `#31b55c`;
       break;
-    // default: console.log(`something went wrong`);
   }
   return result;
 };
 
-// TODO: Написать логику onChange, чтобы сохранять измененнные даты и тут же их применять к чарту в main?
 export const statsPeriod = flatpickr(date, {
   mode: `range`,
   dateFormat: `d-m-Y`,
   defaultDate: [getDefaultDateRange()[0], getDefaultDateRange()[1]],
-  onChange: function(selectedDates, dateStr, instance) {
-   // Как сюда передать выполнение renderCharts из main?
-   console.log(selectedDates);
+  onChange() {
   },
 });
 

@@ -69,6 +69,13 @@ const getChartsData = (tasks) => {
 };
 
 const renderCharts = () => {
+  if (chart.colorChart !== null) {
+    chart.colorChart.destroy();
+  }
+  if (chart.tagsChart !== null) {
+    chart.tagsChart.destroy();
+  }
+
   getChartsData(tasksRawData);
   chart.generateColorsChart(document.querySelector(`.statistic__colors`), chartData.colors, chartData.colorRepeats, chartData.hexColors);
   chart.generateTagsChart(document.querySelector(`.statistic__tags`), chartData.tags, chartData.tagRepeats);
@@ -137,13 +144,10 @@ const filterTasks = (tasks, filterName) => {
   switch (filterName) {
     case `filter__all`:
       return tasksRawData;
-
     case `filter__overdue`:
       return tasksRawData.filter((it) => it.dueDate < Date.now());
-
     case `filter__today`:
       return tasksRawData.filter(() => true);
-
     case `filter__repeating`:
       return tasksRawData.filter((it) => [...Object.entries(it.repeatingDays)]
           .some((rec) => rec[1]));

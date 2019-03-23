@@ -16,25 +16,19 @@ export const getDefaultDateRange = () => {
 };
 
 export const colorToHex = (color) => {
-  let result = ``;
   switch (color) {
     case `pink`:
-      result = `#ff3cb9`;
-      break;
+      return `#ff3cb9`;
     case `yellow`:
-      result = `#ffe125`;
-      break;
+      return `#ffe125`;
     case `blue`:
-      result = `#0c5cdd`;
-      break;
+      return `#0c5cdd`;
     case `black`:
-      result = `#000000`;
-      break;
+      return `#000000`;
     case `green`:
-      result = `#31b55c`;
-      break;
+      return `#31b55c`;
   }
-  return result;
+  return 1; // ESLint заставляет вписать какой-то return
 };
 
 export const statsPeriod = flatpickr(date, {

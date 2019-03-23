@@ -4,16 +4,27 @@ import Task from './task.js';
 import TaskEdit from './task-edit.js';
 import Filter from './filter.js';
 import './stats.js';
-import {defaultDates} from './stats.js';
+import {chart, statsPeriod, colorToHex} from './stats.js';
 
 const boardTasks = document.querySelector(`.board__tasks`);
 const mainFilter = document.querySelector(`.main__filter`);
 const statistic = document.querySelector(`.statistic`);
 const statsButton = document.querySelector(`#control__statistic`);
 const tasksButton = document.querySelector(`#control__task`);
+
+let tasksRawData = [];
+const chartColorsData = {
+  colors: [],
+  colorRepeats: [],
+  hexColors: [],
+};
+
 statsButton.addEventListener(`click`, () => {
   boardTasks.classList.add(`visually-hidden`);
   statistic.classList.remove(`visually-hidden`);
+  getChartsData(tasksRawData);
+  chart.generateColorsChart(document.querySelector(`.statistic__colors`), chartColorsData.colors, chartColorsData.colorRepeats, chartColorsData.hexColors);
+  // console.log(chartColorsData);
 });
 
 tasksButton.addEventListener(`click`, () => {
@@ -21,24 +32,24 @@ tasksButton.addEventListener(`click`, () => {
   statistic.classList.add(`visually-hidden`);
 });
 
-let tasksRawData = [];
-export const chartColorsData = new Map();
-
 const getChartsData = (tasks) => {
-  chartColorsData.clear();
-
   const filteredTasks = tasks.filter((task) => {
-    return task.dueDate < defaultDates.thisSunday && task.dueDate > defaultDates.thisMonday;
+    return task.dueDate < statsPeriod.config.defaultDate[1] && task.dueDate > statsPeriod.config.defaultDate[0];
   });
 
+  const chartColors = new Map();
+  const hexColors = [];
   filteredTasks.map((task) => {
-    if (!chartColorsData.has(task.color)) {
-      chartColorsData.set(task.color, 1);
+    if (!chartColors.has(task.color)) {
+      chartColors.set(task.color, 1);
+      hexColors.push(colorToHex(task.color));
     } else {
-      chartColorsData.set(task.color, chartColorsData.get(task.color) + 1);
+      chartColors.set(task.color, chartColors.get(task.color) + 1);
     }
   });
-  // console.log(chartColorsData);
+  chartColorsData.colors = [...chartColors.keys()];
+  chartColorsData.colorRepeats = [...chartColors.values()];
+  chartColorsData.hexColors = hexColors;
 };
 
 let filtersRawData = [
@@ -67,8 +78,6 @@ const getRawData = (amount) => {
 
 function renderTasks(tasks) {
   for (let i = 0; i < tasks.length; i++) {
-    // let taskData = makeTaskData();
-    // tasks.push(taskData);
     let taskData = tasksRawData[i];
 
     let task = new Task(taskData);
@@ -103,7 +112,6 @@ function renderTasks(tasks) {
   }
 }
 
-
 const filterTasks = (tasks, filterName) => {
   switch (filterName) {
     case `filter__all`:
@@ -130,7 +138,6 @@ function renderFilters(filtersData) {
     filter.onFilter = () => {
       const filterName = filter._id;
       const filteredTasks = filterTasks(tasksRawData, filterName);
-      // console.log(filteredTasks);
       boardTasks.innerHTML = ``; // там можно очищать или надо думать, как удалять элементы?
       renderTasks(filteredTasks);
     };
@@ -141,5 +148,4 @@ function renderFilters(filtersData) {
 tasksRawData = getRawData(7);
 renderTasks(tasksRawData);
 renderFilters(filtersRawData);
-
 getChartsData(tasksRawData);

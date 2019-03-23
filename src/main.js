@@ -24,10 +24,9 @@ const chartData = {
 statsButton.addEventListener(`click`, () => {
   boardTasks.classList.add(`visually-hidden`);
   statistic.classList.remove(`visually-hidden`);
-  getChartsData(tasksRawData);
-  chart.generateColorsChart(document.querySelector(`.statistic__colors`), chartData.colors, chartData.colorRepeats, chartData.hexColors);
-  chart.generateTagsChart(document.querySelector(`.statistic__tags`), chartData.tags, chartData.tagRepeats);
+  renderCharts();
 
+  statsPeriod.config.onChange = renderCharts; // Как заставить onChange делать ререндер чартов на смену дат?
   console.log(chartData);
 });
 
@@ -38,7 +37,7 @@ tasksButton.addEventListener(`click`, () => {
 
 const getChartsData = (tasks) => {
   const filteredTasks = tasks.filter((task) => {
-    return task.dueDate < statsPeriod.config.defaultDate[1] && task.dueDate > statsPeriod.config.defaultDate[0];
+    return task.dueDate < statsPeriod.selectedDates[1] && task.dueDate > statsPeriod.selectedDates[0];
   });
 
   const chartColors = new Map();
@@ -71,6 +70,12 @@ const getChartsData = (tasks) => {
   chartData.tags = [...chartTags.keys()];
   chartData.tagRepeats = [...chartTags.values()];
 };
+
+const renderCharts = () => {
+  getChartsData(tasksRawData);
+  chart.generateColorsChart(document.querySelector(`.statistic__colors`), chartData.colors, chartData.colorRepeats, chartData.hexColors);
+  chart.generateTagsChart(document.querySelector(`.statistic__tags`), chartData.tags, chartData.tagRepeats);
+}
 
 let filtersRawData = [
   makeFilterData(`all`, `filter__all`, true),

@@ -25,7 +25,7 @@ const getRandomTags = (tagsArr) => {
 export const makeTaskData = () =>
   ({
     title: titles[getRandomInt(titles.length)],
-    dueDate: Date.now() + MS_IN_DAY * getRandomInt(7),
+    dueDate: Date.now() + MS_IN_DAY * getRandomInt(2),
     tags: new Set(getRandomTags(tags)),
     picture: `//picsum.photos/100/100?r=${Math.random()}`,
     color: colors[getRandomInt(colors.length)],

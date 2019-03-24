@@ -1,18 +1,9 @@
-export function renderFilter(filterName, count = 0, isChecked = false) {
-  let filterState = isChecked ? `checked` : ``;
-  if (count === 0) {
-    filterState = `disabled`;
-  }
+const getRandomInt = (maxNum) => Math.floor(Math.random() * maxNum);
 
-  return `
-    <input
-      type="radio"
-      id="filter__${filterName}"
-      class="filter__input visually-hidden"
-      name="filter"
-      ${filterState}
-    />
-    <label for="filter__${filterName}" class="filter__label">
-      ${filterName} <span class="filter__${filterName}-count">${count}</span></label
-    >`;
-}
+export const makeFilterData = (title, id, isChecked = false) =>
+  ({
+    title,
+    id,
+    count: getRandomInt(7),
+    isChecked
+  });

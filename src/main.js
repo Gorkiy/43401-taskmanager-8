@@ -62,7 +62,6 @@ const getChartsData = (tasks) => {
       }
     });
   });
-
   chartData.colors = [...chartColors.keys()];
   chartData.colorRepeats = [...chartColors.values()];
   chartData.hexColors = hexColors;
@@ -80,10 +79,11 @@ const renderCharts = () => {
   }
 
   api.getTasks()
-    .then(getChartsData);
-
-  chart.generateColorsChart(document.querySelector(`.statistic__colors`), chartData.colors, chartData.colorRepeats, chartData.hexColors);
-  chart.generateTagsChart(document.querySelector(`.statistic__tags`), chartData.tags, chartData.tagRepeats);
+    .then((tasks) => {
+      getChartsData(tasks);
+      chart.generateColorsChart(document.querySelector(`.statistic__colors`), chartData.colors, chartData.colorRepeats, chartData.hexColors);
+      chart.generateTagsChart(document.querySelector(`.statistic__tags`), chartData.tags, chartData.tagRepeats);
+    });
 };
 
 let filtersRawData = [

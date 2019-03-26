@@ -1,10 +1,14 @@
-import {makeTaskData} from './make-task.js';
 import {makeFilterData} from './make-filter.js';
 import Task from './task.js';
 import TaskEdit from './task-edit.js';
 import Filter from './filter.js';
 import './stats.js';
 import {chart, statsPeriod, colorToHex} from './stats.js';
+import API from './api.js';
+
+const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=${Math.random()}`;
+const END_POINT = `https://es8-demo-srv.appspot.com/task-manager/`;
+const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
 
 const boardTasks = document.querySelector(`.board__tasks`);
 const mainFilter = document.querySelector(`.main__filter`);
@@ -12,7 +16,6 @@ const statistic = document.querySelector(`.statistic`);
 const statsButton = document.querySelector(`#control__statistic`);
 const tasksButton = document.querySelector(`#control__task`);
 
-let tasksRawData = [];
 const chartData = {
   colors: [],
   colorRepeats: [],
@@ -76,7 +79,9 @@ const renderCharts = () => {
     chart.tagsChart.destroy();
   }
 
-  getChartsData(tasksRawData);
+  api.getTasks()
+    .then(getChartsData);
+
   chart.generateColorsChart(document.querySelector(`.statistic__colors`), chartData.colors, chartData.colorRepeats, chartData.hexColors);
   chart.generateTagsChart(document.querySelector(`.statistic__tags`), chartData.tags, chartData.tagRepeats);
 };
@@ -91,24 +96,8 @@ let filtersRawData = [
   makeFilterData(`archive`, `filter__archive`)
 ];
 
-const deleteTask = (tasks, i) => {
-  tasks[i] = null;
-  return tasks;
-};
-
-const getRawData = (amount) => {
-  let result = [];
-  for (let i = 0; i < amount; i++) {
-    let taskData = makeTaskData();
-    result.push(taskData);
-  }
-  return result;
-};
-
 function renderTasks(tasks) {
-  for (let i = 0; i < tasks.length; i++) {
-    let taskData = tasksRawData[i];
-
+  for (const taskData of tasks) {
     let task = new Task(taskData);
     let taskEdit = new TaskEdit(taskData);
 
@@ -127,15 +116,62 @@ function renderTasks(tasks) {
       taskData.repeatingDays = newObject.repeatingDays;
       taskData.dueDate = newObject.dueDate;
 
-      task.update(taskData);
-      task.render();
-      boardTasks.replaceChild(task.element, taskEdit.element);
-      taskEdit.unrender();
+      const block = () => {
+        taskEdit.element.querySelector(`.card__save`).innerText = `saving...`;
+        taskEdit.element.querySelector(`.card__inner`).classList.remove(`card__error`);
+        taskEdit.element.querySelector(`.card__save`).disabled = true;
+        taskEdit.element.querySelector(`.card__text`).disabled = true;
+      };
+      const unblock = () => {
+        taskEdit.element.querySelector(`.card__save`).innerText = `save`;
+        taskEdit.element.querySelector(`.card__save`).disabled = false;
+        taskEdit.element.querySelector(`.card__text`).disabled = false;
+      };
+
+      block();
+
+      api.updateTask({id: taskData.id, data: taskData.toRAW()})
+        .then((newTask) => {
+          unblock();
+          task.update(newTask);
+          task.render();
+          boardTasks.replaceChild(task.element, taskEdit.element);
+          taskEdit.unrender();
+        })
+        .catch(() => {
+          taskEdit.shake();
+          taskEdit.element.querySelector(`.card__inner`).classList.add(`card__error`);
+          unblock();
+        });
     };
 
-    taskEdit.onDelete = () => {
-      deleteTask(tasks, i);
-      taskEdit.unrender();
+    taskEdit.onDelete = ({id}) => {
+      const block = () => {
+        taskEdit.element.querySelector(`.card__delete`).innerText = `deleting...`;
+        taskEdit.element.querySelector(`.card__inner`).classList.remove(`card__error`);
+        taskEdit.element.querySelector(`.card__delete`).disabled = true;
+        taskEdit.element.querySelector(`.card__text`).disabled = true;
+      };
+      const unblock = () => {
+        taskEdit.element.querySelector(`.card__delete`).innerText = `delete`;
+        taskEdit.element.querySelector(`.card__delete`).disabled = false;
+        taskEdit.element.querySelector(`.card__text`).disabled = false;
+      };
+
+      block();
+
+      api.deleteTask({id})
+        .then(() => api.getTasks())
+        .then((remainTasks) => {
+          taskEdit.unrender();
+          boardTasks.innerHTML = ``;
+          renderTasks(remainTasks);
+        })
+        .catch(() => {
+          taskEdit.shake();
+          taskEdit.element.querySelector(`.card__inner`).classList.add(`card__error`);
+          unblock();
+        });
     };
   }
 }
@@ -169,8 +205,11 @@ function renderFilters(filtersData) {
   });
 }
 
-// Temp render
-tasksRawData = getRawData(7);
-renderTasks(tasksRawData);
+// Render
+
+api.getTasks()
+  .then((tasks) => {
+    renderTasks(tasks);
+  });
+
 renderFilters(filtersRawData);
-getChartsData(tasksRawData);

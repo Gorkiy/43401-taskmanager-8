@@ -179,16 +179,16 @@ function renderTasks(tasks) {
 const filterTasks = (tasks, filterName) => {
   switch (filterName) {
     case `filter__all`:
-      return tasksRawData;
+      return tasks;
     case `filter__overdue`:
-      return tasksRawData.filter((it) => it.dueDate < Date.now());
+      return tasks.filter((it) => it.dueDate < Date.now());
     case `filter__today`:
-      return tasksRawData.filter(() => true);
+      return tasks.filter(() => true);
     case `filter__repeating`:
-      return tasksRawData.filter((it) => [...Object.entries(it.repeatingDays)]
+      return tasks.filter((it) => [...Object.entries(it.repeatingDays)]
           .some((rec) => rec[1]));
   }
-  return tasksRawData;
+  return tasks;
 };
 
 function renderFilters(filtersData) {
@@ -198,15 +198,17 @@ function renderFilters(filtersData) {
 
     filter.onFilter = () => {
       const filterName = filter._id;
-      const filteredTasks = filterTasks(tasksRawData, filterName);
-      boardTasks.innerHTML = ``;
-      renderTasks(filteredTasks);
+      api.getTasks()
+        .then((tasks) => {
+          const filteredTasks = filterTasks(tasks, filterName);
+          boardTasks.innerHTML = ``;
+          renderTasks(filteredTasks);
+        });
     };
   });
 }
 
 // Render
-
 api.getTasks()
   .then((tasks) => {
     renderTasks(tasks);
